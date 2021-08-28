@@ -9,6 +9,7 @@ import Button from "@leafygreen-ui/button";
 import ButtonGroup from "./ButtonGroup";
 import TextInput from "@leafygreen-ui/text-input";
 import { uiColors } from "@leafygreen-ui/palette";
+import useModifiableProjects from "../graphql/useModifiableProjects";
 
 import Loading from "./Loading";
 
@@ -67,6 +68,8 @@ function TaskList({ currentProject }) {
   const getTaskById = (id) => tasks.find((task) => task._id === id);
   const [selectedTaskId, setSelectedTaskId] = React.useState(null);
   const selectedTask = getTaskById(selectedTaskId);
+  const modifiableProjects = useModifiableProjects();
+  const canEdit = modifiableProjects.includes(currentProject.partition);
 
   const {
     draftTask,
@@ -89,7 +92,7 @@ function TaskList({ currentProject }) {
         ) : (
           tasks.map((task) => (
             <ListItem key={task._id}>
-              <Card onClick={() => setSelectedTaskId(task._id)}>
+              <Card style={canEdit ? {cursor: "pointer"} : {cursor: "default"}} onClick={() => canEdit && setSelectedTaskId(task._id)}>
                 <TaskContent task={task} />
               </Card>
             </ListItem>
@@ -130,9 +133,11 @@ function TaskList({ currentProject }) {
           </ListItem>
         ) : (
           <ListItem>
-            <Card>
-              <Button onClick={() => createDraftTask()}>Add Task</Button>
-            </Card>
+            {canEdit && (
+              <Card>
+                <Button onClick={() => createDraftTask()}>Add Task</Button>
+              </Card>) 
+            }
           </ListItem>
         )}
       </List>

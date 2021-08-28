@@ -6,6 +6,7 @@ import useChangeTaskStatusButton from "./useChangeTaskStatusButton";
 
 export default function TaskDetailModal({ project, task, unselectTask }) {
   const ChangeTaskStatusButton = useChangeTaskStatusButton(project);
+
   return (
     <Modal
       open={Boolean(task)} // Show the modal if we passed a Task into the task prop.

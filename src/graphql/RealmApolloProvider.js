@@ -12,15 +12,19 @@ const createRealmApolloClient = (app) => {
   const link = new HttpLink({
     // Realm apps use a standard GraphQL endpoint, identified by their App ID
     uri: `https://realm.mongodb.com/api/client/v2.0/app/${app.id}/graphql`,
+
     // A custom fetch handler adds the logged in user's access token to GraphQL requests
     fetch: async (uri, options) => {
       if (!app.currentUser) {
         throw new Error(`Must be logged in to use the GraphQL API`);
       }
+
       // Refreshing a user's custom data also refreshes their access token
       await app.currentUser.refreshCustomData();
-      // TODO: Include the current user's access token in an Authorization header with
-      // every request.
+
+      // Include the current user's access token in an Authorization header with every request.
+      options.headers.Authorization = `Bearer ${app.currentUser.accessToken}`;
+      
       return fetch(uri, options);
     },
   });
@@ -31,6 +35,13 @@ const createRealmApolloClient = (app) => {
 };
 
 export default function RealmApolloProvider({ children }) {
-  // TODO: Create an ``ApolloClient`` object that connects to your app.
+  // Create an ``ApolloClient`` object that connects to your app.
+  const app = useRealmApp();
+  const [client, setClient] = React.useState(createRealmApolloClient(app));
+
+  React.useEffect(() => {
+    setClient(createRealmApolloClient(app));
+  }, [app]);
+
   return <ApolloProvider client={client}>{children}</ApolloProvider>;
 }

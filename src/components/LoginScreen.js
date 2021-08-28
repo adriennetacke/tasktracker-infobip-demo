@@ -11,16 +11,20 @@ import Loading from "./Loading";
 
 export default function LoginScreen() {
   const app = useRealmApp();
+
   // Toggle between logging users in and registering new users
   const [mode, setMode] = React.useState("login");
   const toggleMode = () => {
     setMode((oldMode) => (oldMode === "login" ? "register" : "login"));
   };
+
   // Keep track of form input state
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+
   // Keep track of input validation/errors
   const [error, setError] = React.useState({});
+
   // Whenever the mode changes, clear the form inputs
   React.useEffect(() => {
     setEmail("sampleemail@example.com");
@@ -33,19 +37,24 @@ export default function LoginScreen() {
     setIsLoggingIn(true);
     setError((e) => ({ ...e, password: null }));
     try {
-      // TODO: Call the logIn() method and pass it the emailPassword credentials.
+      // Call the logIn() method and pass it the emailPassword credentials.
+      await app.logIn(Realm.Credentials.emailPassword(email, password));
     } catch (err) {
       handleAuthenticationError(err, setError);
+      setIsLoggingIn(false);
     }
   };
 
   const handleRegistrationAndLogin = async () => {
     const isValidEmailAddress = validator.isEmail(email);
+    
     setError((e) => ({ ...e, password: null }));
+   
     if (isValidEmailAddress) {
       try {
         // Register the user and, if successful, log them in
-        // TODO: Create new emailPassword credentials by calling the registerUser() method.
+        // Create new emailPassword credentials by calling the registerUser() method.
+        await app.emailPasswordAuth.registerUser(email, password);
         return await handleLogin();
       } catch (err) {
         handleAuthenticationError(err, setError);
@@ -190,7 +199,9 @@ const ToggleLink = styled.button`
   background: none;
   border: none;
   font-size: 12px;
+  font-weight: bold;
   color: ${uiColors.green.dark2};
+  cursor: pointer;
 `;
 
 const Container = styled.div`

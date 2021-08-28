@@ -11,21 +11,45 @@ import TextInput from "@leafygreen-ui/text-input";
 import { uiColors } from "@leafygreen-ui/palette";
 import { useRealmApp } from "../RealmApp";
 
+
 function useTeamMembers() {
   const [teamMembers, setTeamMembers] = React.useState(null);
   const [newUserEmailError, setNewUserEmailError] = React.useState(null);
   const app = useRealmApp();
-  // TODO: Import the Realm functions: addTeamMember, removeTeamMember, and getMyTeamMembers
-  // TODO: Implement the function updateTeamMembers so that it calls getMyTeamMembers and updates
+
+
+  // Import the Realm functions: addTeamMember, removeTeamMember, and getMyTeamMembers
+  const { addTeamMember, removeTeamMember, getMyTeamMembers } = app.currentUser.functions;
+
+  // Implement the function updateTeamMembers so that it calls getMyTeamMembers and updates
   // the team variable with the current team members.
+  const updateTeamMembers = () => {
+    getMyTeamMembers().then(setTeamMembers);
+  };
+
   // display team members on load
   React.useEffect(updateTeamMembers, []);
+
   return {
     teamMembers,
     errorMessage: newUserEmailError,
-    // TODO: Call the addTeamMember() function and return updateTeamMembers if
+    // Call the addTeamMember() function and return updateTeamMembers if
     // addTeamMember() was successful.
-    // TODO: Call the removeTeamMember()
+    addTeamMember: async (email, isReadOnly) => {
+      const { error } = await addTeamMember(email, isReadOnly);
+
+      if (error) {
+        setNewUserEmailError(error);
+        return { error };
+      } else {
+        updateTeamMembers();
+      }
+    },
+    // Call the removeTeamMember()
+    removeTeamMember: async (email) => {
+      await removeTeamMember(email);
+      updateTeamMembers();
+    },
   };
 }
 
@@ -48,7 +72,7 @@ export default function EditPermissionsModal({
       <ContentContainer>
         <ModalHeading>Team Members</ModalHeading>
         <ModalText>
-          These users can add, read, modify, and delete tasks in your project
+          These users can add, read, and modify tasks in your project. Check the Read-Only Member option if you only want them to view your project and its tasks.
         </ModalText>
         <ModalText>Add a new user by email:</ModalText>
         <AddTeamMemberInput
@@ -86,40 +110,71 @@ export default function EditPermissionsModal({
 
 function AddTeamMemberInput({ addTeamMember, errorMessage }) {
   const [inputValue, setInputValue] = React.useState("");
+  const [checked, setChecked] = React.useState(false);
+
+  const handleCheck = () => {
+    setChecked(!checked);
+  };
+
   return (
-    <Row>
-      <InputContainer>
-        <TextInput
-          type="email"
-          aria-labelledby="team member email address"
-          placeholder="some.email@example.com"
-          state={errorMessage ? "error" : "none"}
-          errorMessage={errorMessage ?? "Foo"}
-          onChange={(e) => {
-            setInputValue(e.target.value);
+    <>
+      <Row>
+        <InputContainer>
+          <TextInput
+            type="email"
+            aria-labelledby="team member email address"
+            placeholder="some.email@example.com"
+            state={errorMessage ? "error" : "none"}
+            errorMessage={errorMessage ?? "Foo"}
+            onChange={(e) => {
+              setInputValue(e.target.value);
+            }}
+            value={inputValue}
+          />
+        </InputContainer>
+      </Row>
+      <Row>
+        <InputContainer>
+          <Checkbox
+            label="Read-Only Member (Can View tasks but not Add tasks)"
+            value={checked}
+            onChange={handleCheck}
+          />
+        </InputContainer>
+      </Row>
+      <Row>
+        <Button
+          disabled={!inputValue}
+          onClick={async () => {
+            const result = await addTeamMember(inputValue, checked);
+            if (!result?.error) {
+              setInputValue("");
+              setChecked(false);
+            }
           }}
-          value={inputValue}
-        />
-      </InputContainer>
-      <Button
-        disabled={!inputValue}
-        onClick={async () => {
-          const result = await addTeamMember(inputValue);
-          if (!result?.error) {
-            setInputValue("");
-          }
-        }}
-        styles={{ height: "36px" }}
-      >
-        <PlusIcon />
-        Add User
-      </Button>
-    </Row>
+          styles={{ height: "36px" }}
+        >
+          <PlusIcon />
+          Add User
+        </Button>
+      </Row>
+    </>
   );
 }
 
+const Checkbox = ({ label, value, onChange }) => {
+  return (
+    <label>
+      <input type="checkbox" checked={value} onChange={onChange} />
+      {label}
+    </label>
+  );
+};
+
 const Button = styled(LGButton)`
   height: 36px;
+  display: flex;
+  justify-content: right;
 `;
 
 const Row = styled.div`
@@ -128,6 +183,7 @@ const Row = styled.div`
 `;
 const InputContainer = styled.div`
   flex-grow: 1;
+  margin-bottom: 15px;
 `;
 const ModalHeading = styled.h2`
   margin: 0;
