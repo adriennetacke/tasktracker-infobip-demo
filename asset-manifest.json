@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/tasktracker-infobip-demo/static/css/main.889bdc5e.chunk.css",
+    "main.js": "/tasktracker-infobip-demo/static/js/main.aa2ff84f.chunk.js",
+    "main.js.map": "/tasktracker-infobip-demo/static/js/main.aa2ff84f.chunk.js.map",
+    "runtime-main.js": "/tasktracker-infobip-demo/static/js/runtime-main.23b35d57.js",
+    "runtime-main.js.map": "/tasktracker-infobip-demo/static/js/runtime-main.23b35d57.js.map",
+    "static/js/2.7ffc3e6e.chunk.js": "/tasktracker-infobip-demo/static/js/2.7ffc3e6e.chunk.js",
+    "static/js/2.7ffc3e6e.chunk.js.map": "/tasktracker-infobip-demo/static/js/2.7ffc3e6e.chunk.js.map",
+    "index.html": "/tasktracker-infobip-demo/index.html",
+    "precache-manifest.ef0fffab9d47ba2752c7958d3a1a379f.js": "/tasktracker-infobip-demo/precache-manifest.ef0fffab9d47ba2752c7958d3a1a379f.js",
+    "service-worker.js": "/tasktracker-infobip-demo/service-worker.js",
+    "static/css/main.889bdc5e.chunk.css.map": "/tasktracker-infobip-demo/static/css/main.889bdc5e.chunk.css.map",
+    "static/js/2.7ffc3e6e.chunk.js.LICENSE.txt": "/tasktracker-infobip-demo/static/js/2.7ffc3e6e.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.23b35d57.js",
+    "static/js/2.7ffc3e6e.chunk.js",
+    "static/css/main.889bdc5e.chunk.css",
+    "static/js/main.aa2ff84f.chunk.js"
+  ]
+}
