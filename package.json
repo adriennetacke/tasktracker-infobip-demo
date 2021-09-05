@@ -32,7 +32,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "format": "prettier --write \"**/*.js\"",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -b gh-deploy -d build"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -50,6 +52,8 @@
     ]
   },
   "devDependencies": {
+    "gh-pages": "^3.2.3",
     "prettier": "^2.1.2"
-  }
+  },
+  "homepage": "https://adriennetacke.github.io/tasktracker-infobip-demo"
 }
