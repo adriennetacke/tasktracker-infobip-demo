@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "93af2d3ae6ac8bb32d3405a28d2835aa",
+    "revision": "db83317a95785ba2d4f81c2b90838504",
     "url": "/tasktracker-infobip-demo/index.html"
   },
   {
